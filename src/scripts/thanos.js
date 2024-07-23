@@ -1,13 +1,18 @@
 import { PATH_DB } from "../constants/contacts.js";
-import { createFakeContact } from "../utils/createFakeContact.js";
 import { readDataFromFile, writeDataToFile } from "../utils/rwToFile.js";
 
-export const addOneContact = async () => {
+export const thanos = async () => {
   const dbContacts = await readDataFromFile(PATH_DB);
-  const contact = createFakeContact();
-  dbContacts.push(contact);
+  const half = dbContacts.length / 2;
+  while (dbContacts.length > half) {
+    dbContacts.splice(getRandomInt(dbContacts.length), 1);
+  }
   const contacts = JSON.stringify(dbContacts);
   writeDataToFile(PATH_DB, contacts);
 };
 
-await addOneContact();
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+await thanos();
