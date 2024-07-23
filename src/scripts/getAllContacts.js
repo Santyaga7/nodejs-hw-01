@@ -1,12 +1,14 @@
-import { PATH_DB } from "../constants/contacts.js";
-import { readDataFromFile } from "../utils/rwToFile.js";
+import { PATH_DB } from '../constants/contacts.js';
+import * as fs from 'node:fs/promises';
 
 export const getAllContacts = async () => {
-  const dbContacts = await readDataFromFile(PATH_DB);
-  if (dbContacts.length === 0) {
-    return "Your db.json file is empty. Add some contacts first.";
+  try {
+    const allContacts = await fs.readFile(PATH_DB, 'utf-8');
+    const parseAllContacts = JSON.parse(allContacts);
+    return parseAllContacts;
+  } catch (error) {
+    console.log('Error in getAllContacts: ', error);
   }
-  return dbContacts;
 };
 
 console.log(await getAllContacts());

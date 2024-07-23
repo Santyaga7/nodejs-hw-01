@@ -1,13 +1,15 @@
-import { PATH_DB } from "../constants/contacts.js";
-import { createFakeContact } from "../utils/createFakeContact.js";
-import { readDataFromFile, writeDataToFile } from "../utils/rwToFile.js";
+import { PATH_DB } from '../constants/contacts.js';
+import * as fs from 'node:fs/promises';
+import { createFakeContact } from '../utils/createFakeContact.js';
 
-export const addOneContact = async () => {
-  const dbContacts = await readDataFromFile(PATH_DB);
-  const contact = createFakeContact();
-  dbContacts.push(contact);
-  const contacts = JSON.stringify(dbContacts);
-  writeDataToFile(PATH_DB, contacts);
+export const addOneContact = async (number) => {
+  try {
+    const existContacts = JSON.parse(await fs.readFile(PATH_DB, 'utf-8'));
+    const updateContacts = [...existContacts, createFakeContact()];
+    await fs.writeFile(PATH_DB, JSON.stringify(updateContacts, null, 2));
+  } catch (error) {
+    console.error('Error in addOneContact: ', error);
+  }
 };
 
-await addOneContact();
+addOneContact();
